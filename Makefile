@@ -1,16 +1,18 @@
-all: main
+CC = gcc
+CFLAGS = -std=c11 -O2 -w    # -w suprime warnings para ignorar sugestões não críticas
+TARGET = healthsys
+OBJ = main.o bdpacientes.o
 
-CC = clang
-override CFLAGS += -g -Wno-everything -pthread -lm
+all: $(TARGET)
 
-SRCS = $(shell find . -name '.ccls-cache' -type d -prune -o -type f -name '*.c' -print)
-HEADERS = $(shell find . -name '.ccls-cache' -type d -prune -o -type f -name '*.h' -print)
+$(TARGET): $(OBJ)
+	$(CC) $(OBJ) -o $(TARGET)
 
-main: $(SRCS) $(HEADERS)
-	$(CC) $(CFLAGS) $(SRCS) -o "$@"
+main.o: main.c bdpacientes.h
+	$(CC) $(CFLAGS) -c main.c
 
-main-debug: $(SRCS) $(HEADERS)
-	$(CC) $(CFLAGS) -O0 $(SRCS) -o "$@"
+bdpacientes.o: bdpacientes.c bdpacientes.h
+	$(CC) $(CFLAGS) -c bdpacientes.c
 
 clean:
-	rm -f main main-debug
+	rm -f $(OBJ) $(TARGET)
